@@ -105,11 +105,11 @@
                 <version>${easyexcel.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.aliyun</groupId>
-                <artifactId>aliyun-java-sdk-core</artifactId>
-                <version>${aliyun.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>com.aliyun</groupId>-->
+<!--                <artifactId>aliyun-java-sdk-core</artifactId>-->
+<!--                <version>${aliyun.version}</version>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
