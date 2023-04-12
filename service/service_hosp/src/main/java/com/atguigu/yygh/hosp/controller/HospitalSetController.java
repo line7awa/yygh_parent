@@ -117,6 +117,7 @@ public class HospitalSetController {
         String signKey = byId.getSignKey();
         String hoscode = byId.getHoscode();
         //TODO 发送短信
+        System.out.println("aaaaaa");
         return Result.ok();
     }
 }
