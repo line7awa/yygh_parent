@@ -13,8 +13,8 @@
     <modules>
         <module>common-util</module>
         <module>service-util</module>
+        <module>rabbit_util</module>
     </modules>
-
 
     <dependencies>
         <dependency>
@@ -44,6 +44,11 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
     </dependencies>
 

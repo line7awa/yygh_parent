@@ -9,6 +9,7 @@ import com.atguigu.hospital.model.Schedule;
 import com.atguigu.hospital.service.ApiService;
 import com.atguigu.hospital.util.BeanUtils;
 import com.atguigu.hospital.util.HttpRequestHelper;
+import com.atguigu.hospital.util.MD5;
 import com.atguigu.hospital.util.YyghException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
@@ -68,7 +69,7 @@ public class ApiServiceImpl implements ApiService {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("hoscode",this.getHoscode());
         paramMap.put("timestamp", HttpRequestHelper.getTimestamp());
-        paramMap.put("sign", HttpRequestHelper.getSign(paramMap, this.getSignKey()));
+        paramMap.put("sign", MD5.encrypt(this.getSignKey()));
         JSONObject respone = HttpRequestHelper.sendRequest(paramMap,this.getApiUrl()+"/api/hosp/hospital/show");
         System.out.println(respone.toJSONString());
         if(null != respone && 200 == respone.getIntValue("code")) {
@@ -99,7 +100,8 @@ public class ApiServiceImpl implements ApiService {
         paramMap.put("bookingRule",bookingRule.toJSONString());
 
         paramMap.put("timestamp", HttpRequestHelper.getTimestamp());
-        paramMap.put("sign", HttpRequestHelper.getSign(paramMap, this.getSignKey()));
+
+        paramMap.put("sign", MD5.encrypt(this.getSignKey()));
 
         JSONObject respone = HttpRequestHelper.sendRequest(paramMap,this.getApiUrl()+"/api/hosp/saveHospital");
         System.out.println(respone.toJSONString());
@@ -157,7 +159,7 @@ public class ApiServiceImpl implements ApiService {
             paramMap.put("bigname",jsonObject.getString("bigname"));
 
             paramMap.put("timestamp", HttpRequestHelper.getTimestamp());
-            paramMap.put("sign",HttpRequestHelper.getSign(paramMap, this.getSignKey()));
+            paramMap.put("sign",MD5.encrypt(this.getSignKey()));
             JSONObject respone = HttpRequestHelper.sendRequest(paramMap,this.getApiUrl()+"/api/hosp/saveDepartment");
             System.out.println(respone.toJSONString());
 
@@ -193,7 +195,7 @@ public class ApiServiceImpl implements ApiService {
         paramMap.put("page",pageNum);
         paramMap.put("limit",pageSize);
         paramMap.put("timestamp", HttpRequestHelper.getTimestamp());
-        paramMap.put("sign", HttpRequestHelper.getSign(paramMap, this.getSignKey()));
+        paramMap.put("sign", MD5.encrypt(this.getSignKey()));
         JSONObject respone = HttpRequestHelper.sendRequest(paramMap,this.getApiUrl()+"/api/hosp/schedule/list");
         System.out.println(respone.toJSONString());
         if(null != respone && 200 == respone.getIntValue("code")) {

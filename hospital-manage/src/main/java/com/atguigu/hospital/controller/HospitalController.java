@@ -3,6 +3,7 @@ package com.atguigu.hospital.controller;
 import com.atguigu.hospital.service.ApiService;
 import com.atguigu.hospital.service.HospitalService;
 import com.atguigu.hospital.util.*;
+import com.atguigu.yygh.hosp.client.HospitalFeignClient;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ public class HospitalController {
 	@Autowired
 	private ApiService apiService;
 
+
 	/**
 	 * 预约下单
 	 * @param request
@@ -43,13 +45,18 @@ public class HospitalController {
 	public Result AgreeAccountLendProject(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Map<String, Object> paramMap = HttpRequestHelper.switchMap(request.getParameterMap());
-			if(!HttpRequestHelper.isSignEquals(paramMap, apiService.getSignKey())) {
+			System.out.println(apiService.getSignKey());
+			System.out.println(paramMap.get("sign"));
+//			3c66ee738ab7986f5471600937d715db
+			if(!paramMap.get("sign").equals(apiService.getSignKey())) {
 				throw new YyghException(ResultCodeEnum.SIGN_ERROR);
 			}
-
 			Map<String, Object> resultMap = hospitalService.submitOrder(paramMap);
+			System.out.println("bbbbbb");
 			return Result.ok(resultMap);
+
 		} catch (YyghException e) {
+			System.out.println("aaaaaa");
 			return Result.fail().message(e.getMessage());
 		}
 	}

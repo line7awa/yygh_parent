@@ -6,12 +6,15 @@ import com.atguigu.hospital.mapper.OrderInfoMapper;
 import com.atguigu.hospital.mapper.ScheduleMapper;
 import com.atguigu.hospital.model.OrderInfo;
 import com.atguigu.hospital.model.Patient;
+//import com.atguigu.hospital.model.Schedule;
 import com.atguigu.hospital.model.Schedule;
 import com.atguigu.hospital.service.ApiService;
 import com.atguigu.hospital.service.HospitalService;
 import com.atguigu.hospital.util.HttpRequestHelper;
+import com.atguigu.hospital.util.MD5;
 import com.atguigu.hospital.util.ResultCodeEnum;
 import com.atguigu.hospital.util.YyghException;
+import com.atguigu.yygh.hosp.client.HospitalFeignClient;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
@@ -45,25 +48,34 @@ public class HospitalServiceImpl implements HospitalService {
     @Autowired
     private OrderInfoMapper orderInfoMapper;
 
+    @Autowired
+    private HospitalFeignClient hospitalFeignClient;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Map<String, Object> submitOrder(Map<String, Object> paramMap) {
         log.info(JSONObject.toJSONString(paramMap));
         String hoscode = (String)paramMap.get("hoscode");
         String depcode = (String)paramMap.get("depcode");
+        System.out.println(paramMap.toString());
         String hosScheduleId = (String)paramMap.get("hosScheduleId");
         String reserveDate = (String)paramMap.get("reserveDate");
         String reserveTime = (String)paramMap.get("reserveTime");
         String amount = (String)paramMap.get("amount");
-
+        System.out.println("58585858");
+        System.out.println("hSID : "+ hosScheduleId);
         Schedule schedule = this.getSchedule(hosScheduleId);
+//        Schedule schedule =
         if(null == schedule) {
+
+            System.out.println("61616161");
             throw new YyghException(ResultCodeEnum.DATA_ERROR);
         }
 
         if(!schedule.getHoscode().equals(hoscode)
                 || !schedule.getDepcode().equals(depcode)
                 || !schedule.getAmount().toString().equals(amount)) {
+            System.out.println("68686868686868");
             throw new YyghException(ResultCodeEnum.DATA_ERROR);
         }
 
@@ -82,6 +94,7 @@ public class HospitalServiceImpl implements HospitalService {
             //记录预约记录
             OrderInfo orderInfo = new OrderInfo();
             orderInfo.setPatientId(patientId);
+            hosScheduleId = hospitalFeignClient.getScheduleTwo(hosScheduleId).getHosScheduleId();
             orderInfo.setScheduleId(Long.parseLong(hosScheduleId));
             int number = schedule.getReservedNumber().intValue() - schedule.getAvailableNumber().intValue();
             orderInfo.setNumber(number);
@@ -108,6 +121,7 @@ public class HospitalServiceImpl implements HospitalService {
             //排班剩余预约数
             resultMap.put("availableNumber", schedule.getAvailableNumber());
         } else {
+            System.out.println("11111111");
             throw new YyghException(ResultCodeEnum.DATA_ERROR);
         }
         return resultMap;
@@ -144,7 +158,25 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private Schedule getSchedule(String frontSchId) {
-        return hospitalMapper.selectById(frontSchId);
+
+        com.atguigu.yygh.model.hosp.Schedule sch =  hospitalFeignClient.getScheduleTwo(frontSchId);
+        System.out.println("sch:"+sch.toString());
+        Schedule schedule = new Schedule();
+        schedule.setAmount(sch.getAmount().toString());
+        schedule.setDepcode(sch.getDepcode());
+        schedule.setHoscode(sch.getHoscode());
+        schedule.setDocname(sch.getDocname());
+        schedule.setSkill(sch.getSkill());
+        schedule.setHoscode(sch.getHoscode());
+        schedule.setTitle(sch.getTitle());
+        schedule.setWorkTime(sch.getWorkTime());
+        schedule.setAvailableNumber(sch.getAvailableNumber());
+        schedule.setReservedNumber(sch.getReservedNumber());
+        schedule.setWorkDate(sch.getWorkDate().toString());
+        schedule.setStatus(sch.getStatus());
+        System.out.println(schedule.toString());
+        return schedule;
+//        return hospitalMapper.selectById(frontSchId);
     }
 
     /**

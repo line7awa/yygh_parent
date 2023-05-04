@@ -7,6 +7,8 @@
         <module>model</module>
         <module>service</module>
         <module>hospital-manage</module>
+        <module>service-client</module>
+        <module>service_gateway</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -47,7 +49,10 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
@@ -55,6 +60,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
 
             <!--mybatis-plus 持久层-->
             <dependency>

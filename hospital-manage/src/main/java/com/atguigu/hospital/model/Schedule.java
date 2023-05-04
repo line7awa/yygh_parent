@@ -66,5 +66,6 @@ public class Schedule extends BaseNoAutoEntity {
 	@ApiModelProperty(value = "排班状态（-1：停诊 0：停约 1：可约）")
 	@TableField("status")
 	private Integer status;
+
 }
 

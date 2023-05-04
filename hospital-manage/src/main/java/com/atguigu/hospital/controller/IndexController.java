@@ -29,9 +29,10 @@ public class IndexController {
 	 */
 	@RequestMapping(value = "/")
 	public String index(ModelMap model, HttpServletRequest request) {
-
 		return PAGE_INDEX;
 	}
+
+
 
 	/**
 	 * 框架主页

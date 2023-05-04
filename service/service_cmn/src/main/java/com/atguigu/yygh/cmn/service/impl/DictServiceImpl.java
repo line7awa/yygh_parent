@@ -14,7 +14,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sun.util.calendar.LocalGregorianCalendar;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -71,6 +73,41 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String getDictName(String dictCode, String value) {
+        System.out.println("dictCode:" + dictCode);
+        System.out.println("value:" + value);
+        if (StringUtils.isEmpty(dictCode)){
+            QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+            wrapper.eq("value",value);
+            Dict dict = baseMapper.selectOne(wrapper);
+            return dict.getName();
+        }else {
+            Dict codeDict = this.getDictByDictCode(dictCode);
+            Long parent_id = codeDict.getId();
+            Dict finalDict = baseMapper.selectOne(new QueryWrapper<Dict>()
+                    .eq("parent_id",parent_id)
+                    .eq("value",value));
+            return finalDict.getName();
+        }
+    }
+
+    @Override
+    public List<Dict> findByDictCode(String dictCode) {
+        //根据dictcode获取对应id
+        Dict dict = this.getDictByDictCode(dictCode);
+        //根据id获取子节点
+        List<Dict> chlidData = this.findChlidData(dict.getId());
+        return chlidData;
+    }
+
+    private Dict getDictByDictCode(String dictCode) {
+        QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+        wrapper.eq("dict_code",dictCode);
+        Dict codeDict = baseMapper.selectOne(wrapper);
+        return codeDict;
     }
 
     private boolean isChildren(Long id){

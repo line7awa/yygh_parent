@@ -36,6 +36,7 @@ public class ApiController extends BaseController {
 	@RequestMapping("/hospitalSet/index")
 	public String getHospitalSet(ModelMap model,RedirectAttributes redirectAttributes) {
 		HospitalSet hospitalSet = hospitalSetMapper.selectById(1);
+		System.out.println(hospitalSet.getHoscode());
 		model.addAttribute("hospitalSet", hospitalSet);
 		return "hospitalSet/index";
 	}
